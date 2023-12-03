@@ -1,0 +1,5 @@
+#!/bin/sh
+PROJECT_DIR=/Users/sayem/Developer/bankrupt/project-bankrupt
+mvn -f pom.xml clean package -DskipTests -Denv=dev
+~/.ssh/bankrupt/scp/upjar $PROJECT_DIR/app/target/app-0.0.1-SNAPSHOT.jar app-dev/app-dev.jar
+~/.ssh/bankrupt/execfile $PROJECT_DIR/scripts/deploy_dev.sh
