@@ -11,6 +11,6 @@ elif [ "$1" = "module" ]; then
   srcDir="examples/examplemodule"
   execTool "$1" "$2" "$3"
 elif [ "$1" = "migration" ]; then
-  echo "-- New Migration" >"app/src/main/resources/db/migration/V$(date +%s)__$2.sql"
+  echo "-- $(date "+%b %d, %Y")" >"app/src/main/resources/db/migration/V$(date +%s)__$2.sql"
   echo "Migration Created!"
 fi
