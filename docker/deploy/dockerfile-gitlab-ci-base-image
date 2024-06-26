@@ -1,0 +1,10 @@
+# Start from the maven:3-openjdk-17 image
+FROM maven:3-openjdk-17
+
+# Install Docker using apt-get if the base image is Debian-based
+USER root
+RUN microdnf update
+RUN microdnf install -y docker
+
+# Start the Docker service
+CMD ["dockerd"]
