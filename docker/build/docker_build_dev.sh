@@ -1,3 +1,5 @@
 #!/bin/bash
-mvn -f pom.xml clean package -DskipTests -Denv=dev -Dmaven.repo.local=.m2/repository --batch-mode --errors --fail-at-end --show-version
+mkdir -p /var/workdir
+mv . /var/workdir && cd /var/workdir || exit
+mvn -f pom.xml clean package -DskipTests -Denv=dev
 docker build -t sayemoid/cognito_dev .
