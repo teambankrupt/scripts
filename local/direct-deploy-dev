@@ -1,6 +1,17 @@
 #!/bin/sh
 PROJECT_DIR=~/Developer/bankrupt/project-bankrupt
 echo 'Current Directory: ' && echo $PROJECT_DIR
+cd "$PROJECT_DIR" || exit;
+
+# Checkout to dev
+if [ -z "$(git status --porcelain)" ]; then
+    # Working directory is clean, perform git checkout dev
+    git checkout dev
+else
+    # Working directory is not clean, print a message or handle accordingly
+    echo "Error: There are uncommitted changes in the working directory."
+    exit;
+fi
 
 #BUILD
 mvn -f pom.xml clean package -DskipTests -Denv=dev || exit
