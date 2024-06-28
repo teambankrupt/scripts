@@ -1,0 +1,38 @@
+#!/bin/bash
+
+# Setup project dir
+source "$HOME"/.bash_profile
+PROJECT_DIR=~/Developer/bankrupt/project-bankrupt
+printf "PROJECT_DIR: %s\n" "${PROJECT_DIR}"
+
+# Define Data dir for server
+DATA_DIR="/var/cognito"
+printf "DATA_DIR: %s\n" "${DATA_DIR}"
+
+#Preparation
+
+# Check if the line already exists in the file
+#~/.ssh/bankrupt/exec 'bash -s' << 'EOF'
+#line="export DATA_DIR=/root/cognito"
+#
+## Define the file to check
+#file="$HOME/.bashrc"
+#
+#if ! grep -Fxq "$line" "$file"; then
+#  # If the line does not exist, append it to the file
+#  echo "$line" >> "$file"
+#  echo "Added DATA_DIR variable to $file"
+#else
+#  echo "DATA_DIR variable already exists in $file"
+#fi
+#source .bashrc
+#EOF
+
+~/.ssh/bankrupt/exec "mkdir -p '$DATA_DIR'/deployment"
+
+# Upload docker compose resources
+printf "Uploading to %s..\n" "${COGNITO_IP}"
+~/.ssh/bankrupt/scp/uploaddir "$PROJECT_DIR/compose/db/" "$DATA_DIR/deployment"
+
+# Deploy
+~/.ssh/bankrupt/exec "docker compose -f '$DATA_DIR'/deployment/db/db.yml up -d"

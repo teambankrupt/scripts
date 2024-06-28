@@ -1,5 +1,19 @@
 #!/bin/sh
-PROJECT_DIR=/Users/sayem/Developer/bankrupt/project-bankrupt
-mvn -f pom.xml clean package -DskipTests -Denv=dev
-~/.ssh/bankrupt/scp/upjar $PROJECT_DIR/app/target/app-0.0.1-SNAPSHOT.jar app-dev/app-dev.jar
-~/.ssh/bankrupt/execfile $PROJECT_DIR/scripts/deploy_dev.sh
+PROJECT_DIR=~/Developer/bankrupt/project-bankrupt
+echo 'Current Directory: ' && echo $PROJECT_DIR
+
+#BUILD
+#mvn -f pom.xml clean package -DskipTests -Denv=dev
+
+printf "\n ..... Building docker image ..... \n"
+docker buildx build --platform linux/x86_64 -t sayemoid/cognito_dev $PROJECT_DIR --push
+#docker build -t sayemoid/cognito_dev $PROJECT_DIR
+#mkdir -p $PROJECT_DIR/target
+#docker save -o $PROJECT_DIR/target/cognito_dev.tar sayemoid/cognito_dev
+
+# UPLOAD TO SERVER
+~/.ssh/bankrupt/scp/uploadfile $PROJECT_DIR/target/cognito_dev.tar /var/cognito/deployment/cognito_dev.tar
+~/.ssh/bankrupt/scp/uploadfile $PROJECT_DIR/compose/dev/app.yml /var/cognito/deployment/app_dev.yml
+
+# DEPLOY
+~/.ssh/bankrupt/execfile $PROJECT_DIR/scripts/local/deploy_dev.sh
