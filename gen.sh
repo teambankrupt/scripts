@@ -13,4 +13,6 @@ elif [ "$1" = "module" ]; then
 elif [ "$1" = "migration" ]; then
   echo "-- $(date "+%b %d, %Y")" >"app/src/main/resources/db/migration/V$(date +%s)__$2.sql"
   echo "Migration Created!"
+else
+  echo "Must specify type of generated asset. i.e. crud | module | migration"
 fi
