@@ -34,5 +34,10 @@ printf "DATA_DIR: %s\n" "${DATA_DIR}"
 printf "Uploading to %s..\n" "${COGNITO_IP}"
 ~/.ssh/bankrupt/scp/uploaddir "$PROJECT_DIR/compose/db/" "$DATA_DIR/deployment"
 
+# Create Network
+~/.ssh/bankrupt/scp/uploadfile $PROJECT_DIR/compose/setup.yml /var/cognito/deployment/setup.yml
+~/.ssh/bankrupt/exec "docker compose -f '$DATA_DIR'/deployment/setup.yml up -d"
+
 # Deploy
+~/.ssh/bankrupt/exec "docker compose -f '$DATA_DIR'/deployment/db/db.yml down -d"
 ~/.ssh/bankrupt/exec "docker compose -f '$DATA_DIR'/deployment/db/db.yml up -d"

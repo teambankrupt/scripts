@@ -3,7 +3,7 @@ PROJECT_DIR=~/Developer/bankrupt/project-bankrupt
 echo 'Current Directory: ' && echo $PROJECT_DIR
 
 #BUILD
-#mvn -f pom.xml clean package -DskipTests -Denv=dev
+mvn -f pom.xml clean package -DskipTests -Denv=dev || exit
 
 printf "\n ..... Building docker image ..... \n"
 docker buildx build --platform linux/x86_64 -t sayemoid/cognito_dev $PROJECT_DIR --push
@@ -12,6 +12,7 @@ docker buildx build --platform linux/x86_64 -t sayemoid/cognito_dev $PROJECT_DIR
 #docker save -o $PROJECT_DIR/target/cognito_dev.tar sayemoid/cognito_dev
 
 # UPLOAD TO SERVER
+~/.ssh/bankrupt/exec rm /var/cognito/deployment/cognito_dev.tar
 ~/.ssh/bankrupt/scp/uploadfile $PROJECT_DIR/target/cognito_dev.tar /var/cognito/deployment/cognito_dev.tar
 ~/.ssh/bankrupt/scp/uploadfile $PROJECT_DIR/compose/dev/app.yml /var/cognito/deployment/app_dev.yml
 
