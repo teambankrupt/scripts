@@ -38,4 +38,4 @@ docker buildx build --platform linux/x86_64 -t sayemoid/cognito_"$ENV" $PROJECT_
 ~/.ssh/bankrupt/scp/uploadfile $PROJECT_DIR/compose/"$ENV"/app.yml /var/cognito/deployment/app_"$ENV".yml
 
 # DEPLOY
-~/.ssh/bankrupt/execfile $PROJECT_DIR/scripts/local/deploy.sh "$ENV"
+~/.ssh/bankrupt/execfile $PROJECT_DIR/scripts/local/deploy/"$ENV".sh
