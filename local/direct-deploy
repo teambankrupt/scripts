@@ -33,8 +33,8 @@ docker buildx build --platform linux/x86_64 -t sayemoid/cognito_"$ENV" $PROJECT_
 #docker save -o $PROJECT_DIR/target/cognito_"$ENV".tar sayemoid/cognito_"$ENV"
 
 # UPLOAD TO SERVER
-~/.ssh/bankrupt/exec rm /var/cognito/deployment/cognito_"$ENV".tar
-~/.ssh/bankrupt/scp/uploadfile $PROJECT_DIR/target/cognito_"$ENV".tar /var/cognito/deployment/cognito_"$ENV".tar
+#~/.ssh/bankrupt/exec rm /var/cognito/deployment/cognito_"$ENV".tar
+#~/.ssh/bankrupt/scp/uploadfile $PROJECT_DIR/target/cognito_"$ENV".tar /var/cognito/deployment/cognito_"$ENV".tar
 ~/.ssh/bankrupt/scp/uploadfile $PROJECT_DIR/compose/"$ENV"/app.yml /var/cognito/deployment/app_"$ENV".yml
 
 # DEPLOY
