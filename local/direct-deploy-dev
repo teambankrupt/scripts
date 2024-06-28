@@ -1,31 +1,41 @@
 #!/bin/sh
+
+ENV=$1
+
 PROJECT_DIR=~/Developer/bankrupt/project-bankrupt
 echo 'Current Directory: ' && echo $PROJECT_DIR
 cd "$PROJECT_DIR" || exit;
 
 # Checkout to dev
 if [ -z "$(git status --porcelain)" ]; then
-    # Working directory is clean, perform git checkout dev
-    git checkout dev
+    # Working directory is clean, perform git checkout "$ENV"
+    if [ "$ENV" = 'prod' ]; then
+        git checkout master
+    elif [ "$ENV" = 'dev' ] || [ "$ENV" = 'stag' ]; then
+      git checkout "$ENV"
+    else
+      echo "Err: env must be one of these items -> dev | stag | prod"
+      exit
+    fi
 else
     # Working directory is not clean, print a message or handle accordingly
     echo "Error: There are uncommitted changes in the working directory."
-    exit;
+    exit
 fi
 
 #BUILD
-mvn -f pom.xml clean package -DskipTests -Denv=dev || exit
+mvn -f pom.xml clean package -DskipTests -Denv="$ENV" || exit
 
 printf "\n ..... Building docker image ..... \n"
-docker buildx build --platform linux/x86_64 -t sayemoid/cognito_dev $PROJECT_DIR --push
-#docker build -t sayemoid/cognito_dev $PROJECT_DIR
+docker buildx build --platform linux/x86_64 -t sayemoid/cognito_"$ENV" $PROJECT_DIR --push
+#docker build -t sayemoid/cognito_"$ENV" $PROJECT_DIR
 #mkdir -p $PROJECT_DIR/target
-#docker save -o $PROJECT_DIR/target/cognito_dev.tar sayemoid/cognito_dev
+#docker save -o $PROJECT_DIR/target/cognito_"$ENV".tar sayemoid/cognito_"$ENV"
 
 # UPLOAD TO SERVER
-~/.ssh/bankrupt/exec rm /var/cognito/deployment/cognito_dev.tar
-~/.ssh/bankrupt/scp/uploadfile $PROJECT_DIR/target/cognito_dev.tar /var/cognito/deployment/cognito_dev.tar
-~/.ssh/bankrupt/scp/uploadfile $PROJECT_DIR/compose/dev/app.yml /var/cognito/deployment/app_dev.yml
+~/.ssh/bankrupt/exec rm /var/cognito/deployment/cognito_"$ENV".tar
+~/.ssh/bankrupt/scp/uploadfile $PROJECT_DIR/target/cognito_"$ENV".tar /var/cognito/deployment/cognito_"$ENV".tar
+~/.ssh/bankrupt/scp/uploadfile $PROJECT_DIR/compose/"$ENV"/app.yml /var/cognito/deployment/app_"$ENV".yml
 
 # DEPLOY
-~/.ssh/bankrupt/execfile $PROJECT_DIR/scripts/local/deploy_dev.sh
+~/.ssh/bankrupt/execfile $PROJECT_DIR/scripts/local/deploy.sh "$ENV"
