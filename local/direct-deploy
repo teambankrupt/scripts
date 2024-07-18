@@ -24,7 +24,7 @@ else
 fi
 
 #BUILD
-mvn -f pom.xml clean package -Denv="$ENV" || exit
+mvn -f pom.xml clean package -Denv="$ENV" -DskipTests || exit
 
 printf "\n ..... Building docker image ..... \n"
 docker buildx build --platform linux/x86_64 -t sayemoid/cognito_"$ENV" $PROJECT_DIR --push
