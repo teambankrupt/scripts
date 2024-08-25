@@ -27,7 +27,7 @@ fi
 mvn -f pom.xml clean package -Denv="$ENV" -DskipTests || exit
 
 printf "\n ..... Building docker image ..... \n"
-docker buildx build --platform linux/x86_64 -t sayemoid/cognito_"$ENV" $PROJECT_DIR --push
+docker buildx build --platform linux/x86_64 -t sayemoid/cognito_"$ENV":latest $PROJECT_DIR --push
 #docker build -t sayemoid/cognito_"$ENV" $PROJECT_DIR
 #mkdir -p $PROJECT_DIR/target
 #docker save -o $PROJECT_DIR/target/cognito_"$ENV".tar sayemoid/cognito_"$ENV"
