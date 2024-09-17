@@ -24,10 +24,17 @@ else
 fi
 
 #BUILD
-mvn -f pom.xml clean install -Denv="$ENV" -DskipTests || exit
+mvn -f pom.xml clean install -Denv="$ENV" -DskipTests || exit # Build Backend Platform
+cd $PROJECT_DIR/clients/cognito-client-web || exit
+./gradlew clean assemble || exit # Build Client Web App
+cd $PROJECT_DIR || exit
 
 printf "\n ..... Building docker image ..... \n"
 docker buildx build --platform linux/x86_64 -t sayemoid/cognito_"$ENV" $PROJECT_DIR --push || exit
+docker buildx build --platform linux/x86_64 -t sayemoid/cognito_client_web_"$ENV" $PROJECT_DIR/clients/cognito-client-web --push || exit
+
+
+#------- BUILD TAR AND TRANSFER TO SERVER
 #docker build -t sayemoid/cognito_"$ENV" $PROJECT_DIR
 #mkdir -p $PROJECT_DIR/target
 #docker save -o $PROJECT_DIR/target/cognito_"$ENV".tar sayemoid/cognito_"$ENV"
@@ -35,6 +42,8 @@ docker buildx build --platform linux/x86_64 -t sayemoid/cognito_"$ENV" $PROJECT_
 # UPLOAD TO SERVER
 #~/.ssh/bankrupt/exec rm /var/cognito/deployment/cognito_"$ENV".tar
 #~/.ssh/bankrupt/scp/uploadfile $PROJECT_DIR/target/cognito_"$ENV".tar /var/cognito/deployment/cognito_"$ENV".tar
+#-------- END BUILD TAR AND TRANSFER TO SERVER
+
 ~/.ssh/bankrupt/scp/uploadfile $PROJECT_DIR/compose/"$ENV"/app.yml /var/cognito/deployment/app_"$ENV".yml
 
 # DEPLOY
